@@ -3,44 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MathEGEsim - Подготовка к ЕГЭ по математике{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>ULearnEGE - Подготовка к ЕГЭ по математике</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-
-                <nav class="nav">
-                    <a href="#features" class="nav-link">Возможности</a>
-                    <a href="#how-it-works" class="nav-link">Как работает</a>
-                    <a href="#start" class="nav-link">Начать</a>
-                </nav>
-
-                <div class="header-actions">
-                    <a href="#" class="btn btn-login">Войти</a>
-                    <a href="#" class="btn btn-register">Регистрация</a>
-                </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">MathExamPrep</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#">Войти</a>
+                <a class="nav-link" href="#">Зарегистрироваться</a>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <main class="main">
-        {% block content %}{% endblock %}
-    </main>
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="logo">
-                        <span class="logo-icon">∫</span>
-                        <span class="logo-text">ULearnEGE</span>
-                    </div>
-                    <p>Платформа для подготовки к ЕГЭ по математике</p>
-                </div>
-
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h1 class="display-4">{{ welcome_message }}</h1>
+                <p class="lead">{{ site_description }}</p>
+                <a href="#" class="btn btn-primary btn-lg">Начать решать задачи</a>
             </div>
+        </div>
+    </div>
+
+    <footer class="bg-light text-muted py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2026 ULearnEGE</p>
         </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
