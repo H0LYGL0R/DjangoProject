@@ -3,12 +3,11 @@ from .models import Problem
 
 
 @admin.register(Problem)
-class TaskAdmin(admin.ModelAdmin):
-    list_display = ['id', 'text_preview', 'answer', 'created_at']
-    list_filter = ['created_at']
+class ProblemAdmin(admin.ModelAdmin):
+    list_display = ['id', 'text_short', 'answer']
     search_fields = ['text']
 
-    def text_preview(self, obj):
-        return obj.text[:100] + "..." if len(obj.text) > 100 else obj.text
+    def text_short(self, obj):
+        return obj.text[:50] + "..." if len(obj.text) > 50 else obj.text
 
-    text_preview.short_description = 'Текст задачи'
+    text_short.short_description = 'Текст задачи'
