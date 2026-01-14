@@ -10,44 +10,6 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <!-- Навигация -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">
-                <i class="bi bi-calculator me-2"></i>ULearnEGE
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#home">Главная</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Возможности</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#topics">Темы</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#statistics">Статистика</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#demo">Демо</a>
-                    </li>
-                </ul>
-                <div class="navbar-nav">
-                    <a class="btn btn-outline-primary me-2" href="{% url 'login' %}">
-                        <i class="bi bi-box-arrow-in-right me-1"></i>Войти
-                    </a>
-                    <a class="btn btn-primary" href="{% url 'register' %}">
-                        <i class="bi bi-person-plus me-1"></i>Регистрация
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
 
     <!-- Герой-секция -->
     <section class="hero-section" id="home">
@@ -57,9 +19,6 @@
                     <h1 class="display-4 fw-bold mb-4">Подготовка к ЕГЭ по математике стала умнее</h1>
                     <p class="lead mb-4">Адаптивная система, которая анализирует ваши слабые места и создает индивидуальный план подготовки. Увеличьте свой балл на 20+ пунктов с помощью искусственного интеллекта.</p>
                     <div class="d-flex flex-column flex-md-row gap-3">
-                        <a href="{% url 'register' %}" class="btn btn-light btn-lg px-4 py-3">
-                            <i class="bi bi-rocket-takeoff me-2"></i>Начать бесплатно
-                        </a>
                         <a href="#demo" class="btn btn-outline-light btn-lg px-4 py-3">
                             <i class="bi bi-play-circle me-2"></i>Посмотреть демо
                         </a>
@@ -164,9 +123,6 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <small class="text-muted">{{ topic.problem_count }} задач в теме</small>
-                                <a href="{% url 'topic_detail' topic.id %}" class="btn btn-sm btn-outline-primary">
-                                    Изучать <i class="bi bi-arrow-right ms-1"></i>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -174,9 +130,6 @@
                 {% endfor %}
             </div>
             <div class="text-center mt-5">
-                <a href="{% url 'topics' %}" class="btn btn-primary px-5 py-3">
-                    <i class="bi bi-list-ul me-2"></i>Все темы (18 разделов)
-                </a>
             </div>
         </div>
     </section>
