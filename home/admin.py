@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Task
+from .models import Problem
 
 
-@admin.register(Task)
+@admin.register(Problem)
 class TaskAdmin(admin.ModelAdmin):
     list_display = ['id', 'text_preview', 'answer', 'created_at']
     list_filter = ['created_at']
