@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html lang="ru">
+<!-- Добавь эту секцию в конец твоего index.html -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="mb-4">База задач ЕГЭ</h2>
+        <p class="lead mb-4">Более 10 готовых задач с решениями для подготовки</p>
+        <a href="/tasks/" class="btn btn-primary btn-lg">
+            <i class="bi bi-journal-text me-2"></i> Смотреть все задачи
+        </a>
+    </div>
+</section>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +17,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
@@ -19,9 +28,6 @@
                     <h1 class="display-4 fw-bold mb-4">Подготовка к ЕГЭ по математике стала умнее</h1>
                     <p class="lead mb-4">Адаптивная система, которая анализирует ваши слабые места и создает индивидуальный план подготовки. Увеличьте свой балл на 20+ пунктов с помощью искусственного интеллекта.</p>
                     <div class="d-flex flex-column flex-md-row gap-3">
-                        <a href="#demo" class="btn btn-outline-light btn-lg px-4 py-3">
-                            <i class="bi bi-play-circle me-2"></i>Посмотреть демо
-                        </a>
                     </div>
                     <div class="mt-4">
                         <div class="d-flex align-items-center text-white-50">
