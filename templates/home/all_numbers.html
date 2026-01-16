@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Задачи по номерам ЕГЭ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .number-card {
+            border: none;
+            transition: transform 0.2s;
+            height: 100%;
+        }
+        .number-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .number-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+        .basic { background: #d1e7dd; color: #0f5132; }
+        .medium { background: #fff3cd; color: #856404; }
+        .hard { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">MathExamPrep</a>
+            <a href="/choose/" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Назад к выбору
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mb-4">Задачи по номерам ЕГЭ</h1>
+        <p class="text-muted mb-4">Выберите номер задачи для глубокой проработки</p>
+
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="number-circle basic">1-8</div>
+                        <h5>Базовые задачи</h5>
+                        <p class="small text-muted">Первичные умения</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="number-circle medium">9-12</div>
+                        <h5>Средние задачи</h5>
+                        <p class="small text-muted">Применение знаний</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="number-circle hard">13-18</div>
+                        <h5>Сложные задачи</h5>
+                        <p class="small text-muted">Высокий уровень</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for num in numbers %}
+            <div class="col-md-3 col-lg-2 mb-3">
+                <a href="/number/{{ num.number }}/" class="text-decoration-none">
+                    <div class="card number-card text-center">
+                        <div class="card-body">
+                            <div class="number-circle
+                                {% if num.number <= 8 %}basic
+                                {% elif num.number <= 12 %}medium
+                                {% else %}hard
+                                {% endif %}">
+                                {{ num.number }}
+                            </div>
+                            <h6 class="card-title">Задача {{ num.number }}</h6>
+                            <p class="card-text small text-muted">
+                                {{ num.count }} задач
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/variant/" class="btn btn-primary me-2">
+                <i class="bi bi-shuffle"></i> Случайный вариант
+            </a>
+            <a href="/choose/" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Назад
+            </a>
+        </div>
+    </div>
+</body>
+</html>
