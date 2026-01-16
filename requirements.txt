@@ -3,5 +3,4 @@ dj-database-url==2.1.0
 psycopg==3.3.2
 whitenoise==6.6.0
 matplotlib==3.8.0
-gunicorn==21.0.0
-uvicorn==0.38.0
+
