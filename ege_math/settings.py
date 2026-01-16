@@ -58,10 +58,10 @@ WSGI_APPLICATION = 'ege_math.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'test',
-        'USER': 'test_hc7t_user',
-        'PASSWORD': '0SMGsSfRTDeJZEJDNkcOIp9WUNDufurb',
-        'HOST': 'dpg-d5hbivp5pdvs73bco7m0-a',
+        'NAME': 'myproject_db',
+        'USER': 'myuser',
+        'PASSWORD': 'mypass',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
