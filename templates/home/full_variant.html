@@ -10,23 +10,10 @@
 </head>
 <body>
     <!-- Шапка варианта -->
-    <div class="variant-header">
+    <div class="number-header">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <h1 class="mb-2"><i class="bi bi-journal-text me-2"></i>Полный вариант ЕГЭ</h1>
-                    <p class="lead mb-0">
-                        <span class="badge bg-light text-primary me-2">Вариант #{{ variant_id }}</span>
-                        <span class="badge bg-light text-primary">18 задач • 180 минут</span>
-                    </p>
-                </div>
-                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                    <div class="d-inline-block bg-white text-primary rounded-pill px-4 py-2">
-                        <div class="timer" id="timer">180:00</div>
-                        <small class="text-muted">Время на выполнение</small>
-                    </div>
-                </div>
-            </div>
+            <h1>Полный вариант ЕГЭ</h1>
+            <p class="lead mb-0">Вариант #{{ variant_id }} • 12 задач • 120 минут</p>
         </div>
     </div>
 
@@ -41,7 +28,7 @@
                         <div class="d-flex align-items-center">
                             <i class="bi bi-info-circle-fill me-3 fs-4"></i>
                             <div>
-                                <strong>Инструкция:</strong> Заполните ответы для всех 18 задач.
+                                <strong>Инструкция:</strong> Заполните ответы для всех 12 задач.
                                 Используйте точку для десятичных дробей (например: 3.14).
                                 После заполнения нажмите кнопку "Проверить вариант" внизу страницы.
                             </div>
@@ -51,81 +38,34 @@
             </div>
             <div class="row">
                 {% for problem in problems %}
-                <div class="col-xl-6 col-lg-12 mb-4">
-                    <div class="card task-card h-100">
+                <div class="col-md-12 mb-4">
+                    <div class="card problem-card">
                         <div class="card-body">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="task-number">{{ problem.ege_number }}</div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <h5 class="card-title mb-1">Задача №{{ problem.ege_number }}</h5>
-                                        <span class="badge bg-secondary">1 балл</span>
-                                    </div>
-                                    <small class="text-muted d-block mb-2">
-                                        {% if problem.ege_number <= 8 %}
-                                            <i class="bi bi-check-circle me-1"></i> Базовая сложность
-                                        {% elif problem.ege_number <= 12 %}
-                                            <i class="bi bi-exclamation-triangle me-1"></i> Средняя сложность
-                                        {% else %}
-                                            <i class="bi bi-lightning me-1"></i> Высокая сложность
-                                        {% endif %}
-                                    </small>
-                                </div>
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title">Задача №{{ problem.ege_number }}</h5>
+                                <span class="badge bg-secondary">
+                                    1 балл
+                                </span>
                             </div>
-                            <div class="mb-4">
-                                <p class="card-text task-text">{{ problem.text }}</p>
-                            </div>
+
+                            <p class="card-text fs-5 mb-4">{{ problem.text }}</p>
+
                             <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    <label class="form-label fw-bold mb-1">
-                                        <i class="bi bi-pencil-square me-1"></i>Ваш ответ:
-                                    </label>
+                                <div class="col-md-6">
                                     <div class="input-group">
                                         <input type="number"
                                                step="0.01"
-                                               class="form-control answer-input"
+                                               class="form-control"
                                                name="answer_{{ problem.id }}"
                                                id="answer_{{ problem.id }}"
-                                               placeholder="Введите число"
+                                               placeholder="Ваш ответ"
                                                autocomplete="off">
-                                        <span class="input-group-text bg-light">
-                                            <i class="bi bi-calculator text-muted"></i>
-                                        </span>
                                     </div>
-                                    <div class="form-text small mt-1">
-                                        {% if problem.ege_number in "1,2,3,4,5" %}
-                                            Обычно целое число
-                                        {% elif problem.ege_number in "6,7,8,9" %}
-                                            Может быть десятичной дробью
-                                        {% else %}
-                                            Введите точный ответ
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                                    <small class="text-muted d-block">ID задачи: {{ problem.id }}</small>
-                                    {% if problem.ege_number <= 8 %}
-                                        <span class="badge bg-info mt-1">Часть 1</span>
-                                    {% else %}
-                                        <span class="badge bg-warning mt-1">Часть 2</span>
-                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                {% if forloop.counter == 9 %}
-                <!-- Разделитель после 9 задачи -->
-                <div class="col-12">
-                    <div class="task-separator">
-                        <div class="text-center">
-                            <span class="bg-white px-3 text-muted">
-                                <i class="bi bi-arrow-down me-1"></i>Продолжение варианта
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
                 {% endfor %}
             </div>
 
@@ -141,13 +81,13 @@
                         </div>
                         <div class="col-md-3 mb-3">
                             <div class="p-3 bg-light rounded">
-                                <div class="fs-4 fw-bold">18</div>
+                                <div class="fs-4 fw-bold">12</div>
                                 <div class="text-muted">Всего задач</div>
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
                             <div class="p-3 bg-light rounded">
-                                <div class="fs-4 fw-bold">18</div>
+                                <div class="fs-4 fw-bold">12</div>
                                 <div class="text-muted">Максимум баллов</div>
                             </div>
                         </div>
@@ -178,52 +118,51 @@
             </div>
 
             <!-- Результаты проверки -->
-<!-- Результаты проверки -->
-{% if results %}
-<div class="card results-card border-success mt-4" style="display:block;">
-    <div class="card-header bg-success text-white">
-        <h4><i class="bi bi-clipboard-check me-2"></i>Результаты проверки</h4>
-    </div>
-    <div class="card-body">
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="p-3 bg-light rounded text-center">
-                    <div class="display-4 fw-bold text-success">{{ total_score }}</div>
-                    <div class="text-muted">Баллы</div>
+            {% if results %}
+            <div class="card results-card border-success mt-4" style="display:block;">
+                <div class="card-header bg-success text-white">
+                    <h4><i class="bi bi-clipboard-check me-2"></i>Результаты проверки</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded text-center">
+                                <div class="display-4 fw-bold text-success">{{ total_score }}</div>
+                                <div class="text-muted">Баллы</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded text-center">
+                                <div class="display-4 fw-bold text-primary">{{ max_score }}</div>
+                                <div class="text-muted">Всего заданий</div>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-striped results-table">
+                        <thead>
+                            <tr>
+                                <th>Задача</th>
+                                <th>Ваш ответ</th>
+                                <th>Правильный ответ</th>
+                                <th>Статус</th>
+                                <th>Баллы</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr class="{% if result.is_correct %}table-success{% else %}table-danger{% endif %}">
+                                <td>{{ result.problem_number }}</td>
+                                <td>{{ result.user_answer|default:"—" }}</td>
+                                <td>{{ result.correct_answer }}</td>
+                                <td>{% if result.is_correct %}<i class="bi bi-check-circle text-success"></i> Верно{% else %}<i class="bi bi-x-circle text-danger"></i> Ошибка{% endif %}</td>
+                                <td>{{ result.score }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="p-3 bg-light rounded text-center">
-                    <div class="display-4 fw-bold text-primary">{{ max_score }}</div>
-                    <div class="text-muted">Всего заданий</div>
-                </div>
-            </div>
-        </div>
-        <table class="table table-striped results-table">
-            <thead>
-                <tr>
-                    <th>Задача</th>
-                    <th>Ваш ответ</th>
-                    <th>Правильный ответ</th>
-                    <th>Статус</th>
-                    <th>Баллы</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for result in results %}
-                <tr class="{% if result.is_correct %}table-success{% else %}table-danger{% endif %}">
-                    <td>{{ result.problem_number }}</td>
-                    <td>{{ result.user_answer|default:"—" }}</td>
-                    <td>{{ result.correct_answer }}</td>
-                    <td>{% if result.is_correct %}<i class="bi bi-check-circle text-success"></i> Верно{% else %}<i class="bi bi-x-circle text-danger"></i> Ошибка{% endif %}</td>
-                    <td>{{ result.score }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-{% endif %}
+            {% endif %}
 
         </form>
 
