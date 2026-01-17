@@ -348,3 +348,137 @@ body {
     border-radius: 10px;
     transition: width 0.5s ease;
 }
+
+/* ========== Стили для full_variant.html ========== */
+
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+}
+
+.variant-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #6610f2 100%);
+    color: white;
+    padding: 30px 0;
+    margin-bottom: 30px;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.task-card {
+    border-left: 4px solid var(--primary-color);
+    margin-bottom: 20px;
+    transition: all 0.3s;
+    border-radius: 10px;
+}
+
+.task-card:hover {
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.1);
+    transform: translateY(-2px);
+}
+
+.task-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.answer-input {
+    max-width: 150px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.answer-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+    outline: none;
+}
+
+.filled-input {
+    border-color: var(--success-color);
+    background-color: rgba(25, 135, 84, 0.05);
+}
+
+.results-table th {
+    background: #f8f9fa;
+    position: sticky;
+    top: 0;
+}
+
+.results-card {
+    border: 2px solid var(--success-color);
+    border-radius: 15px;
+    overflow: hidden;
+    display: none;
+}
+
+.score-badge {
+    font-size: 1.2rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+
+.timer {
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
+
+.task-text {
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
+
+@media (max-width: 768px) {
+    .task-number {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+
+    .answer-input {
+        max-width: 120px;
+    }
+
+    .variant-header {
+        padding: 20px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .task-card {
+        margin-bottom: 15px;
+    }
+
+    .task-text {
+        font-size: 1rem;
+    }
+}
+
+.task-separator {
+    border-top: 2px dashed #dee2e6;
+    margin: 30px 0;
+}
+
+.action-buttons {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 15px 0;
+    border-top: 1px solid #dee2e6;
+    z-index: 100;
+}
