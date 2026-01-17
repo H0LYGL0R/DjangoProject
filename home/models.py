@@ -1,5 +1,6 @@
 from django.db import models
 import random
+from django.utils import timezone
 
 
 class Problem(models.Model):
@@ -10,7 +11,7 @@ class Problem(models.Model):
         choices=[(i, f"Задача {i}") for i in range(1, 19)],
         default=1
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         ordering = ['ege_number', 'id']
@@ -19,15 +20,18 @@ class Problem(models.Model):
         return f"Задача {self.ege_number} (#{self.id})"
 
     @staticmethod
-    def get_random_variant():
-        """Создать случайный вариант из 3 задач разных номеров"""
-        all_numbers = list(range(1, 19))
-        selected_numbers = random.sample(all_numbers, min(3, len(all_numbers)))
-
+    def create_full_variant():
+        """Создать полный вариант (по 1 задаче каждого типа 1-18)"""
         variant_problems = []
-        for number in selected_numbers:
+        for number in range(1, 19):
             problems = Problem.objects.filter(ege_number=number)
             if problems.exists():
                 variant_problems.append(random.choice(list(problems)))
-
+            else:
+                # Если нет задачи этого типа, создаем заглушку
+                variant_problems.append(Problem(
+                    text=f"Задача №{number} (в разработке)",
+                    answer=0.0,
+                    ege_number=number
+                ))
         return variant_problems

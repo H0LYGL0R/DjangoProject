@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Выбор режима</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .mode-card {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s;
+            height: 100%;
+        }
+        .mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .btn-mode {
+            padding: 20px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+        }
+        .number-badge {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">MathExamPrep</a>
+            <a href="/" class="btn btn-outline-light">На главную</a>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold mb-3">Выберите режим подготовки</h1>
+            <p class="lead text-muted">Практикуйтесь эффективно с помощью разных форматов</p>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-6 mb-4">
+                <div class="card mode-card border-success">
+                    <div class="card-body text-center p-5">
+                        <div class="number-badge bg-success text-white">🎯</div>
+                        <h3 class="card-title mb-3">Случайный вариант</h3>
+                        <p class="card-text text-muted mb-4">
+                            Решите 3 случайные задачи разных типов. Идеально для ежедневной практики.
+                        </p>
+                            <!-- В карточке "Случайный вариант" измени ссылку: -->
+                        <a href="/variant/" class="btn btn-success btn-lg btn-mode">
+                            <i class="bi bi-shuffle me-2"></i>Полный вариант
+                        </a>
+                        <p class="small text-muted mt-3 mb-0">Задачи: 1-18 • Время: ~30 мин</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card mode-card border-primary">
+                    <div class="card-body text-center p-5">
+                        <div class="number-badge bg-primary text-white">📚</div>
+                        <h3 class="card-title mb-3">По номерам ЕГЭ</h3>
+                        <p class="card-text text-muted mb-4">
+                            Отработайте конкретные типы задач. Выберите номер для глубокой проработки.
+                        </p>
+                        <a href="/numbers/" class="btn btn-primary btn-lg btn-mode">
+                            <i class="bi bi-list-ol me-2"></i>Выбрать номер
+                        </a>
+                        <p class="small text-muted mt-3 mb-0">Все 18 типов задач</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="/" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Вернуться
+            </a>
+        </div>
+    </div>
+</body>
+</html>
