@@ -8,7 +8,7 @@ class Problem(models.Model):
     answer = models.FloatField(verbose_name="Правильный ответ")
     ege_number = models.IntegerField(
         verbose_name="Номер в ЕГЭ",
-        choices=[(i, f"Задача {i}") for i in range(1, 19)],
+        choices=[(i, f"Задача {i}") for i in range(1, 13)],
         default=1
     )
     created_at = models.DateTimeField(default=timezone.now)
@@ -21,9 +21,8 @@ class Problem(models.Model):
 
     @staticmethod
     def create_full_variant():
-        """Создать полный вариант (по 1 задаче каждого типа 1-18)"""
         variant_problems = []
-        for number in range(1, 19):
+        for number in range(1, 13):
             problems = Problem.objects.filter(ege_number=number)
             if problems.exists():
                 variant_problems.append(random.choice(list(problems)))
