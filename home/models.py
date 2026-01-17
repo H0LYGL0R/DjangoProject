@@ -11,7 +11,6 @@ class Problem(models.Model):
         choices=[(i, f"Задача {i}") for i in range(1, 13)],
         default=1
     )
-    created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         ordering = ['ege_number', 'id']
