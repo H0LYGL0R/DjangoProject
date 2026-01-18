@@ -16,9 +16,6 @@
                 <a href="{% url 'choose_mode' %}" class="btn btn-outline-light me-2">
                     <i class="bi bi-arrow-left"></i> Назад
                 </a>
-                <a href="{% url 'global_statistics' %}" class="btn btn-light">
-                    <i class="bi bi-globe"></i> Общая статистика
-                </a>
             </div>
         </div>
     </nav>
@@ -29,32 +26,32 @@
             <p class="lead text-muted">Отслеживайте свой прогресс в подготовке к ЕГЭ</p>
         </div>
 
-        <div class="row mb-5">
-            <div class="col-md-3 col-6 mb-3">
-                <div class="card text-center h-100">
-                    <div class="card-body">
-                        <div class="stat-number text-primary">{{ user_stats.total_attempts }}</div>
-                        <div class="stat-label">Всего попыток</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-3">
-                <div class="card text-center h-100">
-                    <div class="card-body">
-                        <div class="stat-number text-success">{{ user_stats.correct_attempts }}</div>
-                        <div class="stat-label">Правильных решений</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-3">
-                <div class="card text-center h-100">
-                    <div class="card-body">
-                        <div class="stat-number text-info">{{ user_stats.accuracy }}%</div>
-                        <div class="stat-label">Точность</div>
-                    </div>
+            <div class="row mb-5 justify-content-center">
+        <div class="col-md-4 col-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="stat-number text-primary">{{ user_stats.total_attempts }}</div>
+                    <div class="stat-label">Всего попыток</div>
                 </div>
             </div>
         </div>
+        <div class="col-md-4 col-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="stat-number text-success">{{ user_stats.correct_attempts }}</div>
+                    <div class="stat-label">Правильных решений</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="stat-number text-info">{{ user_stats.accuracy }}%</div>
+                    <div class="stat-label">Точность</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
         <div class="card mb-5">
     <div class="card-header bg-primary text-white">
@@ -65,7 +62,7 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Тип задачи</th>
+                        <th>Номер задачи</th>
                         <th>Мои попытки</th>
                         <th>Правильно</th>
                         <th>Моя точность</th>
