@@ -3,40 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULearnEGE - Подготовка к ЕГЭ по математике</title>
+    <title>ULearnEGE - Подготовка к первой части профильного ЕГЭ по математике</title>
     {% load static %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
 <body>
-    <!-- Навигация -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">MathExamPrep</a>
             <div class="d-flex">
-                <a href="{% url 'user_statistics' %}" class="btn btn-outline-primary me-2">
-                    <i class="bi bi-bar-chart"></i> Моя статистика
-                </a>
-                <a href="{% url 'global_statistics' %}" class="btn btn-outline-success">
-                    <i class="bi bi-globe"></i> Общая статистика
-                </a>
             </div>
         </div>
     </nav>
 
-    <!-- Герой-секция -->
     <section class="hero-section" id="home">
         <div class="container pt-5">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold mb-4">Подготовка к ЕГЭ по математике стала проще</h1>
-                    <p class="lead mb-4">Решайте задачи, тренируйтесь, отслеживайте прогресс и достигайте высоких результатов.</p>
+                    <h1 class="display-4 fw-bold mb-4">Подготовка к профильному ЕГЭ по математике стала проще</h1>
+                    <p class="lead mb-4">Решайте задачи первой части, тренируйтесь, отслеживайте прогресс и достигайте высоких результатов.</p>
                     <div class="text-center mt-5">
                         <a href="/choose/"
                            class="btn btn-primary btn-lg px-5 py-3"
                            role="button"
-                           aria-label="Начать решение задач ЕГЭ по математике"
+                           aria-label="Начать решение задач"
                            title="Перейти к выбору заданий">
                             <i class="bi bi-play-fill me-2"></i> Решать!
                         </a>
@@ -52,47 +44,50 @@
                 <h2 class="fw-bold">Статистика платформы</h2>
                 <p class="text-muted">Наши пользователи уже решили</p>
             </div>
+
             <div class="row text-center">
                 <div class="col-md-3 col-6 mb-4">
                     <div class="p-4 bg-white rounded shadow-sm">
-                        <div class="stat-number">{{ global_stats.total_attempts }}</div>
+                        <div class="stat-number">{{ global_stats.total_attempts|default:"0" }}</div>
                         <div class="stat-label">Всего попыток</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-6 mb-4">
                     <div class="p-4 bg-white rounded shadow-sm">
-                        <div class="stat-number">{{ global_stats.total_users }}</div>
+                        <div class="stat-number">{{ global_stats.total_users|default:"1" }}</div>
                         <div class="stat-label">Пользователей</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-6 mb-4">
                     <div class="p-4 bg-white rounded shadow-sm">
-                        <div class="stat-number">{{ global_stats.overall_accuracy }}%</div>
+                        <div class="stat-number">{{ global_stats.overall_accuracy|default:"0" }}%</div>
                         <div class="stat-label">Точность решений</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-6 mb-4">
                     <div class="p-4 bg-white rounded shadow-sm">
-                        <div class="stat-number">{{ global_stats.total_score }}</div>
+                        <div class="stat-number">{{ global_stats.total_score|default:"0" }}</div>
                         <div class="stat-label">Всего баллов</div>
                     </div>
                 </div>
             </div>
+
+            <div class="text-center mt-5">
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'user_statistics' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-person-bar-chart me-2"></i> Моя статистика
+                    </a>
+                    <a href="{% url 'global_statistics' %}" class="btn btn-success btn-lg">
+                        <i class="bi bi-globe me-2"></i> Общая статистика
+                    </a>
+                </div>
+                <p class="text-muted mt-3 small">
+                    Отслеживайте свой прогресс и сравнивайте с другими пользователями
+                </p>
+            </div>
         </div>
     </section>
 
-
-    <section class="py-5 text-center">
-        <div class="container">
-            <h2 class="fw-bold mb-4">Начните готовиться к ЕГЭ прямо сейчас!</h2>
-            <p class="lead mb-4">Бесплатно, без регистрации, с отслеживанием прогресса</p>
-            <a href="/choose/" class="btn btn-primary btn-lg px-5">
-                <i class="bi bi-play-fill me-2"></i> Начать тренировку
-            </a>
-        </div>
-    </section>
-
-    <!-- Футер -->
     <footer class="bg-dark text-white py-4">
         <div class="container">
             <div class="row">
@@ -102,7 +97,7 @@
                 </div>
                 <div class="col-md-6 text-end">
                     <p class="text-muted mb-0">
-                        &copy; 2026 MathExamPrep
+                        &copy; 2026 ULearnEGE
                     </p>
                 </div>
             </div>
