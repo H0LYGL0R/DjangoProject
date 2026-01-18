@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Моя статистика</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">MathExamPrep</a>
+            <div>
+                <a href="{% url 'choose_mode' %}" class="btn btn-outline-light me-2">
+                    <i class="bi bi-arrow-left"></i> Назад
+                </a>
+                <a href="{% url 'global_statistics' %}" class="btn btn-light">
+                    <i class="bi bi-globe"></i> Общая статистика
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold mb-3">Моя статистика</h1>
+            <p class="lead text-muted">Отслеживайте свой прогресс в подготовке к ЕГЭ</p>
+        </div>
+
+        <!-- Основные показатели -->
+        <div class="row mb-5">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="stat-number text-primary">{{ user_stats.total_attempts }}</div>
+                        <div class="stat-label">Всего попыток</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="stat-number text-success">{{ user_stats.correct_attempts }}</div>
+                        <div class="stat-label">Правильных решений</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="stat-number text-info">{{ user_stats.accuracy }}%</div>
+                        <div class="stat-label">Точность</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="stat-number text-warning">{{ user_stats.solved_problems }}</div>
+                        <div class="stat-label">Уникальных задач</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика по типам задач -->
+        <div class="card mb-5">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-list-ol me-2"></i>Статистика по типам задач</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Тип задачи</th>
+                                <th>Мои попытки</th>
+                                <th>Правильно</th>
+                                <th>Моя точность</th>
+                                <th>Общая точность</th>
+                                <th>Разница</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in type_stats %}
+                            {% comment %} Вычисляем разницу между моей и общей точностью {% endcomment %}
+                            {% with diff=stat.user.accuracy|floatformat:1|add:0 %}
+                                {% with global_acc=stat.global.accuracy|floatformat:1|add:0 %}
+                                <tr>
+                                    <td>
+                                        <strong>Задача {{ stat.number }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ stat.global.total }} общих попыток</small>
+                                    </td>
+                                    <td>{{ stat.user.total }}</td>
+                                    <td>{{ stat.user.correct }}</td>
+                                    <td>
+                                        <span class="badge {% if stat.user.accuracy >= 80 %}bg-success{% elif stat.user.accuracy >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ stat.user.accuracy }}%
+                                        </span>
+                                    </td>
+                                    <td>{{ stat.global.accuracy }}%</td>
+                                    <td>
+                                        {% comment %} Вычисляем разницу {% endcomment %}
+                                        {% with diff_value=stat.user.accuracy|add:"0" %}
+                                        {% with global_value=stat.global.accuracy|add:"0" %}
+                                        {% with actual_diff=diff_value|add:"-"|add:global_value %}
+                                        <span class="badge {% if actual_diff > 5 %}bg-success{% elif actual_diff < -5 %}bg-danger{% else %}bg-secondary{% endif %}">
+                                            {% if actual_diff > 0 %}+{% endif %}{{ actual_diff }}%
+                                        </span>
+                                        {% endwith %}
+                                        {% endwith %}
+                                        {% endwith %}
+                                    </td>
+                                </tr>
+                                {% endwith %}
+                            {% endwith %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Последние попытки -->
+        <div class="card mb-5">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Последние попытки</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Задача</th>
+                                <th>Ответ</th>
+                                <th>Статус</th>
+                                <th>Баллы</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attempt in recent_attempts %}
+                            <tr>
+                                <td>{{ attempt.created_at|date:"d.m.Y H:i" }}</td>
+                                <td>Задача {{ attempt.problem.ege_number }}</td>
+                                <td>{{ attempt.user_answer|floatformat:2 }}</td>
+                                <td>
+                                    {% if attempt.is_correct %}
+                                    <span class="badge bg-success"><i class="bi bi-check-circle"></i> Верно</span>
+                                    {% else %}
+                                    <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Ошибка</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ attempt.score }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Пока нет попыток</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Сложные задачи -->
+        {% if difficult_problems %}
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Самые сложные для меня задачи</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for item in difficult_problems %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">Задача {{ item.problem.ege_number }}</h6>
+                                <p class="card-text small">{{ item.problem.text|truncatechars:100 }}</p>
+                                <div class="progress mb-2" style="height: 10px;">
+                                    <div class="progress-bar bg-warning" style="width: {{ item.accuracy }}%"></div>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-muted">{{ item.correct }}/{{ item.total }}</small>
+                                    <small class="text-muted">{{ item.accuracy }}%</small>
+                                </div>
+                                <a href="{% url 'problems_by_number' item.problem.ege_number %}" class="btn btn-outline-warning btn-sm mt-2 w-100">
+                                    Тренировать
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="text-center mt-5">
+            <a href="{% url 'choose_mode' %}" class="btn btn-primary me-2">
+                <i class="bi bi-play-fill"></i> Продолжить тренировку
+            </a>
+            <a href="{% url 'global_statistics' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-globe"></i> Сравнить с другими
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -54,6 +54,30 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Добавьте эту карточку в существующий row с другими карточками -->
+            <div class="col-md-4 mb-4">
+                <div class="card mode-card border-info">
+                    <div class="card-body text-center p-5">
+                        <div class="number-badge bg-info text-white">📊</div>
+                        <h3 class="card-title mb-3">Статистика</h3>
+                        <p class="card-text text-muted mb-4">
+                            Отслеживайте свой прогресс и сравнивайте с другими пользователями.
+                        </p>
+                        <a href="{% url 'user_statistics' %}" class="btn btn-info btn-lg btn-mode mb-2">
+                            <i class="bi bi-person-bar-chart me-2"></i>Моя статистика
+                        </a>
+                        <br>
+                        <a href="{% url 'global_statistics' %}" class="btn btn-outline-info mt-2">
+                            <i class="bi bi-globe me-2"></i>Общая статистика
+                        </a>
+                        <p class="small text-muted mt-3 mb-0">
+                            Решено задач: {{ user_stats.total_attempts }}<br>
+                            Точность: {{ user_stats.accuracy }}%
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="text-center">

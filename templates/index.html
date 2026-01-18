@@ -7,12 +7,27 @@
     {% load static %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
 <body>
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">MathExamPrep</a>
+            <div class="d-flex">
+                <a href="{% url 'user_statistics' %}" class="btn btn-outline-primary me-2">
+                    <i class="bi bi-bar-chart"></i> Моя статистика
+                </a>
+                <a href="{% url 'global_statistics' %}" class="btn btn-outline-success">
+                    <i class="bi bi-globe"></i> Общая статистика
+                </a>
+            </div>
+        </div>
+    </nav>
 
     <!-- Герой-секция -->
     <section class="hero-section" id="home">
-        <div class="container">
+        <div class="container pt-5">
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <h1 class="display-4 fw-bold mb-4">Подготовка к ЕГЭ по математике стала проще</h1>
@@ -31,5 +46,132 @@
         </div>
     </section>
 
+    <!-- Статистика платформы -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Статистика платформы</h2>
+                <p class="text-muted">Наши пользователи уже решили</p>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="p-4 bg-white rounded shadow-sm">
+                        <div class="stat-number">{{ global_stats.total_attempts }}</div>
+                        <div class="stat-label">Всего попыток</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="p-4 bg-white rounded shadow-sm">
+                        <div class="stat-number">{{ global_stats.total_users }}</div>
+                        <div class="stat-label">Пользователей</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="p-4 bg-white rounded shadow-sm">
+                        <div class="stat-number">{{ global_stats.overall_accuracy }}%</div>
+                        <div class="stat-label">Точность решений</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="p-4 bg-white rounded shadow-sm">
+                        <div class="stat-number">{{ global_stats.total_score }}</div>
+                        <div class="stat-label">Всего баллов</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Сложные задачи -->
+    {% if difficult_problems %}
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Самые сложные задачи</h2>
+                <p class="text-muted">Задачи, с которыми чаще всего возникают трудности</p>
+            </div>
+            <div class="row">
+                {% for item in difficult_problems %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Задача {{ item.problem.ege_number }}</h5>
+                            <p class="card-text">{{ item.problem.text|truncatechars:100 }}</p>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-danger" style="width: {{ item.stats.accuracy }}%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">Точность: {{ item.stats.accuracy }}%</small>
+                                <small class="text-muted">{{ item.stats.total_attempts }} попыток</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Последние успехи -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Последние успешные решения</h2>
+                <p class="text-muted">Недавно решенные задачи другими пользователями</p>
+            </div>
+            <div class="row">
+                {% for success in recent_successes %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="card-title mb-1">Задача {{ success.problem.ege_number }}</h6>
+                                    <p class="card-text small mb-2">{{ success.problem.text|truncatechars:80 }}</p>
+                                </div>
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle"></i>
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Ответ: {{ success.user_answer|floatformat:2 }}</small>
+                                <small class="text-muted">{{ success.created_at|timesince }} назад</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Призыв к действию -->
+    <section class="py-5 text-center">
+        <div class="container">
+            <h2 class="fw-bold mb-4">Начните готовиться к ЕГЭ прямо сейчас!</h2>
+            <p class="lead mb-4">Бесплатно, без регистрации, с отслеживанием прогресса</p>
+            <a href="/choose/" class="btn btn-primary btn-lg px-5">
+                <i class="bi bi-play-fill me-2"></i> Начать тренировку
+            </a>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>MathExamPrep</h5>
+                    <p class="text-muted">Подготовка к ЕГЭ по математике</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-muted mb-0">
+                        &copy; 2024 MathExamPrep. Всего попыток: {{ global_stats.total_attempts }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
