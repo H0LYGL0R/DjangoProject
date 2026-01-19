@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Problem, UserStatistics, UserProblemAttempt, ProblemStatistics, GlobalStatistics
+from .models import Problem, UserStatistics, UserProblemAttempt
 import random
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.utils import timezone
-from django.db.models import F, ExpressionWrapper, FloatField  # Добавьте эти импорты
+from django.db.models import Count, Sum, Avg, F, FloatField, Q
 
 
 def get_or_create_user_statistics(request):
@@ -21,9 +21,99 @@ def get_or_create_user_statistics(request):
     return stats
 
 
+def get_global_statistics():
+    """Получить глобальную статистику через агрегацию"""
+    # Общая статистика
+    total_users = UserStatistics.objects.count()
+
+    # Получаем агрегированные данные за один запрос
+    attempts_stats = UserProblemAttempt.objects.aggregate(
+        total_attempts=Count('id'),
+        total_correct_attempts=Count('id', filter=Q(is_correct=True)),
+        total_score=Sum('score')
+    )
+
+    total_attempts = attempts_stats['total_attempts'] or 0
+    total_correct_attempts = attempts_stats['total_correct_attempts'] or 0
+    total_score = attempts_stats['total_score'] or 0
+
+    # Точность
+    overall_accuracy = 0
+    if total_attempts > 0:
+        overall_accuracy = round((total_correct_attempts / total_attempts) * 100, 1)
+
+    # Средний балл
+    average_score_per_attempt = 0
+    if total_attempts > 0:
+        average_score_per_attempt = round(total_score / total_attempts, 2)
+
+    # Средний балл на пользователя
+    average_score_per_user = 0
+    if total_users > 0:
+        average_score_per_user = round(total_score / total_users, 1)
+
+    # Статистика по типам задач
+    problems_by_type = {}
+    for i in range(1, 13):
+        # Используем агрегацию за один запрос
+        type_stats = UserProblemAttempt.objects.filter(
+            problem__ege_number=i
+        ).aggregate(
+            total=Count('id'),
+            correct=Count('id', filter=Q(is_correct=True)),
+            total_score=Sum('score')
+        )
+
+        total = type_stats['total'] or 0
+        correct = type_stats['correct'] or 0
+        score = type_stats['total_score'] or 0
+
+        accuracy = 0
+        if total > 0:
+            accuracy = round((correct / total) * 100, 1)
+
+        avg_score = 0
+        if total > 0:
+            avg_score = round(score / total, 2)
+
+        problems_by_type[str(i)] = {
+            'total': total,
+            'correct': correct,
+            'score': score,
+            'accuracy': accuracy,
+            'average_score': avg_score
+        }
+
+    return {
+        'total_users': total_users,
+        'total_attempts': total_attempts,
+        'total_correct_attempts': total_correct_attempts,
+        'total_score': total_score,
+        'overall_accuracy': overall_accuracy,
+        'average_score_per_attempt': average_score_per_attempt,
+        'average_score_per_user': average_score_per_user,
+        'problems_by_type': problems_by_type,
+        'updated_at': timezone.now()
+    }
+
+
 def index(request):
-    # Получаем глобальную статистику для главной страницы
-    global_stats = GlobalStatistics.get_instance()
+    try:
+        # Получаем глобальную статистику
+        global_stats = get_global_statistics()
+    except Exception as e:
+        # Если произошла ошибка (например, таблицы еще не созданы)
+        global_stats = {
+            'total_users': 0,
+            'total_attempts': 0,
+            'total_correct_attempts': 0,
+            'total_score': 0,
+            'overall_accuracy': 0,
+            'average_score_per_attempt': 0,
+            'average_score_per_user': 0,
+            'problems_by_type': {},
+            'updated_at': timezone.now()
+        }
 
     # Получаем последние успешные решения
     recent_successes = UserProblemAttempt.objects.filter(
@@ -31,23 +121,21 @@ def index(request):
     ).select_related('problem').order_by('-created_at')[:10]
 
     # Самые сложные задачи (по проценту правильных решений)
-    # Нужно вычислить accuracy через аннотацию
-    problem_stats = ProblemStatistics.objects.filter(
-        total_attempts__gt=0
-    ).annotate(
-        accuracy_calc=ExpressionWrapper(
-            F('correct_attempts') * 100.0 / F('total_attempts'),
-            output_field=FloatField()
-        )
-    ).select_related('problem').order_by('accuracy_calc')[:5]
+    # Получаем задачи с попытками
+    problems_with_attempts = []
+    problems = Problem.objects.all()
 
-    # Преобразуем QuerySet в список, чтобы можно было обращаться к свойству accuracy
-    difficult_problems = []
-    for stat in problem_stats:
-        difficult_problems.append({
-            'problem': stat.problem,
-            'stats': stat
-        })
+    for problem in problems:
+        stats = problem.stats
+        if stats['total_attempts'] > 0:
+            problems_with_attempts.append({
+                'problem': problem,
+                'stats': stats,
+                'accuracy': stats['accuracy']
+            })
+
+    # Сортируем по точности (от меньшей к большей) и берем топ-5
+    difficult_problems = sorted(problems_with_attempts, key=lambda x: x['accuracy'])[:5]
 
     return render(request, 'index.html', {
         'global_stats': global_stats,
@@ -114,7 +202,6 @@ def check_variant(request):
 
     # Получаем статистику пользователя
     user_stats = get_or_create_user_statistics(request)
-    global_stats = GlobalStatistics.get_instance()
 
     for problem in selected_problems:
         user_answer_str = request.POST.get(f'answer_{problem.id}', '').strip()
@@ -135,10 +222,8 @@ def check_variant(request):
                 user_answer=0,
                 score=0
             )
-            # Обновляем статистику
+            # Обновляем статистику пользователя
             user_stats.update_statistics(problem, False, 0)
-            problem.stats.update_statistics(False, 0)  # Здесь должно быть stats
-            global_stats.update_statistics(problem.ege_number, False, 0)
             continue
 
         try:
@@ -173,10 +258,8 @@ def check_variant(request):
             score=score
         )
 
-        # Обновляем статистику
+        # Обновляем статистику пользователя
         user_stats.update_statistics(problem, is_correct, score)
-        problem.stats.update_statistics(is_correct, score)  # Здесь должно быть stats
-        global_stats.update_statistics(problem.ege_number, is_correct, score)
 
     # Сохраняем результаты в сессии и перенаправляем на страницу с результатами
     request.session['check_results'] = results
@@ -197,20 +280,32 @@ def show_result(request):
     if not results:
         return redirect('full_variant')
 
-    # Получаем статистику пользователя
+    # Получаем статистику пользователя и глобальную статистику
     user_stats = get_or_create_user_statistics(request)
-    global_stats = GlobalStatistics.get_instance()
+    global_stats = get_global_statistics()
 
     # Получаем статистику по типам задач из результатов
     type_stats = {}
     for result in results:
         problem_type = result['problem_number']
-        type_stats[problem_type] = global_stats.get_type_statistics(problem_type)
+        type_stats[problem_type] = global_stats['problems_by_type'].get(str(problem_type), {
+            'total': 0,
+            'correct': 0,
+            'score': 0,
+            'accuracy': 0,
+            'average_score': 0
+        })
+
+    # Вычисляем процент выполнения
+    percentage = 0
+    if max_score > 0:
+        percentage = round((total_score / max_score) * 100, 2)
 
     return render(request, 'home/result.html', {
         'results': results,
         'total_score': total_score,
         'max_score': max_score,
+        'percentage': percentage,
         'user_stats': user_stats,
         'global_stats': global_stats,
         'type_stats': type_stats,
@@ -225,8 +320,14 @@ def problems_by_number(request, ege_number):
     user_type_stats = user_stats.get_type_statistics(ege_number)
 
     # Получаем глобальную статистику по этому типу задач
-    global_stats = GlobalStatistics.get_instance()
-    global_type_stats = global_stats.get_type_statistics(ege_number)
+    global_stats = get_global_statistics()
+    global_type_stats = global_stats['problems_by_type'].get(str(ege_number), {
+        'total': 0,
+        'correct': 0,
+        'score': 0,
+        'accuracy': 0,
+        'average_score': 0
+    })
 
     # Получаем общую статистику по всем задачам этого типа
     problems_with_stats = []
@@ -249,11 +350,15 @@ def problems_by_number(request, ege_number):
 
 def all_numbers(request):
     numbers = []
-    global_stats = GlobalStatistics.get_instance()
+    global_stats = get_global_statistics()
 
     for i in range(1, 13):  # Только от 1 до 12
         count = Problem.objects.filter(ege_number=i).count()
-        type_stats = global_stats.get_type_statistics(i)
+        type_stats = global_stats['problems_by_type'].get(str(i), {
+            'total': 0,
+            'correct': 0,
+            'accuracy': 0
+        })
         numbers.append({
             'number': i,
             'count': count,
@@ -273,7 +378,7 @@ def all_numbers(request):
 def user_statistics(request):
     """Страница статистики пользователя"""
     user_stats = get_or_create_user_statistics(request)
-    global_stats = GlobalStatistics.get_instance()
+    global_stats = get_global_statistics()
 
     # Получаем последние попытки пользователя
     recent_attempts = UserProblemAttempt.objects.filter(
@@ -284,7 +389,13 @@ def user_statistics(request):
     type_stats = []
     for i in range(1, 13):
         user_type = user_stats.get_type_statistics(i)
-        global_type = global_stats.get_type_statistics(i)
+        global_type = global_stats['problems_by_type'].get(str(i), {
+            'total': 0,
+            'correct': 0,
+            'score': 0,
+            'accuracy': 0,
+            'average_score': 0
+        })
 
         type_stats.append({
             'number': i,
@@ -293,10 +404,6 @@ def user_statistics(request):
         })
 
     # Самые сложные задачи для пользователя
-    # Используем агрегацию для подсчета попыток по задачам
-    from django.db.models import Count, Q
-    from django.db.models import FloatField, ExpressionWrapper, F
-
     user_attempts_by_problem = UserProblemAttempt.objects.filter(
         session_key=request.session.session_key
     ).values('problem').annotate(
@@ -333,30 +440,26 @@ def user_statistics(request):
 
 def global_statistics(request):
     """Страница глобальной статистики"""
-    global_stats = GlobalStatistics.get_instance()
+    global_stats = get_global_statistics()
 
     # Топ самых сложных задач
-    # Используем аннотацию для вычисления accuracy
-    from django.db.models import F, ExpressionWrapper, FloatField
+    # Получаем статистику по всем задачам
+    problem_stats = []
+    problems = Problem.objects.all()
+    for problem in problems:
+        stats = problem.stats
+        if stats['total_attempts'] >= 5:  # Минимум 5 попыток для включения в рейтинг
+            problem_stats.append({
+                'problem': problem,
+                'stats': stats,
+                'accuracy': stats['accuracy']
+            })
 
-    difficult_problems_qs = ProblemStatistics.objects.filter(
-        total_attempts__gte=10
-    ).annotate(
-        accuracy_calc=ExpressionWrapper(
-            F('correct_attempts') * 100.0 / F('total_attempts'),
-            output_field=FloatField()
-        )
-    ).select_related('problem').order_by('accuracy_calc')[:10]
+    # Сортируем по точности (от меньшей к большей) - самые сложные
+    difficult_problems = sorted(problem_stats, key=lambda x: x['accuracy'])[:10]
 
     # Топ самых легких задач
-    easy_problems_qs = ProblemStatistics.objects.filter(
-        total_attempts__gte=10
-    ).annotate(
-        accuracy_calc=ExpressionWrapper(
-            F('correct_attempts') * 100.0 / F('total_attempts'),
-            output_field=FloatField()
-        )
-    ).select_related('problem').order_by('-accuracy_calc')[:10]
+    easy_problems = sorted(problem_stats, key=lambda x: x['accuracy'], reverse=True)[:10]
 
     # Самые активные пользователи (по количеству попыток)
     active_users = UserStatistics.objects.filter(
@@ -371,25 +474,16 @@ def global_statistics(request):
     # Статистика по типам задач
     type_stats = []
     for i in range(1, 13):
-        stats = global_stats.get_type_statistics(i)
+        stats = global_stats['problems_by_type'].get(str(i), {
+            'total': 0,
+            'correct': 0,
+            'score': 0,
+            'accuracy': 0,
+            'average_score': 0
+        })
         type_stats.append({
             'number': i,
             'stats': stats
-        })
-
-    # Преобразуем QuerySet в списки для шаблона
-    difficult_problems = []
-    for stat in difficult_problems_qs:
-        difficult_problems.append({
-            'problem': stat.problem,
-            'stats': stat
-        })
-
-    easy_problems = []
-    for stat in easy_problems_qs:
-        easy_problems.append({
-            'problem': stat.problem,
-            'stats': stat
         })
 
     return render(request, 'home/global_statistics.html', {
@@ -400,3 +494,4 @@ def global_statistics(request):
         'recent_successes': recent_successes,
         'type_stats': type_stats,
     })
+

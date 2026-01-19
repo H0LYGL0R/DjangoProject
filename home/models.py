@@ -25,7 +25,8 @@ class Problem(models.Model):
         """Статистика задачи через агрегацию"""
         attempts = UserProblemAttempt.objects.filter(problem=self)
 
-        if attempts.count() == 0:
+        total_attempts = attempts.count()
+        if total_attempts == 0:
             return {
                 'total_attempts': 0,
                 'correct_attempts': 0,
@@ -34,16 +35,23 @@ class Problem(models.Model):
                 'average_score': 0
             }
 
-        total_attempts = attempts.count()
         correct_attempts = attempts.filter(is_correct=True).count()
         total_score = attempts.aggregate(total=Sum('score'))['total'] or 0
+
+        accuracy = 0
+        if total_attempts > 0:
+            accuracy = round((correct_attempts / total_attempts) * 100, 1)
+
+        average_score = 0
+        if total_attempts > 0:
+            average_score = round(total_score / total_attempts, 2)
 
         return {
             'total_attempts': total_attempts,
             'correct_attempts': correct_attempts,
             'total_score': total_score,
-            'accuracy': round((correct_attempts / total_attempts) * 100, 1) if total_attempts > 0 else 0,
-            'average_score': round(total_score / total_attempts, 2) if total_attempts > 0 else 0
+            'accuracy': accuracy,
+            'average_score': average_score
         }
 
     @staticmethod
@@ -207,7 +215,3 @@ class UserProblemAttempt(models.Model):
     def __str__(self):
         status = "✓" if self.is_correct else "✗"
         return f"{status} {self.session_key[:8]} - Задача {self.problem.ege_number}"
-
-# Удаленные модели:
-# 1. ProblemStatistics - заменена на свойство stats в Problem
-# 2. GlobalStatistics - заменена на функции для агрегации данных
