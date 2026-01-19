@@ -1,7 +1,8 @@
 from django.db import models
 import random
 from django.utils import timezone
-from django.contrib.sessions.models import Session
+from django.db.models import Count, Sum, Avg, F, FloatField
+from django.db.models.functions import Cast
 
 
 class Problem(models.Model):
@@ -20,10 +21,30 @@ class Problem(models.Model):
         return f"Задача {self.ege_number} (#{self.id})"
 
     @property
-    def stats(self):  # Убедитесь, что здесь stats, а не statistics
-        """Общая статистика по этой задаче"""
-        stats, created = ProblemStatistics.objects.get_or_create(problem=self)
-        return stats
+    def stats(self):
+        """Статистика задачи через агрегацию"""
+        attempts = UserProblemAttempt.objects.filter(problem=self)
+
+        if attempts.count() == 0:
+            return {
+                'total_attempts': 0,
+                'correct_attempts': 0,
+                'total_score': 0,
+                'accuracy': 0,
+                'average_score': 0
+            }
+
+        total_attempts = attempts.count()
+        correct_attempts = attempts.filter(is_correct=True).count()
+        total_score = attempts.aggregate(total=Sum('score'))['total'] or 0
+
+        return {
+            'total_attempts': total_attempts,
+            'correct_attempts': correct_attempts,
+            'total_score': total_score,
+            'accuracy': round((correct_attempts / total_attempts) * 100, 1) if total_attempts > 0 else 0,
+            'average_score': round(total_score / total_attempts, 2) if total_attempts > 0 else 0
+        }
 
     @staticmethod
     def create_full_variant():
@@ -187,188 +208,6 @@ class UserProblemAttempt(models.Model):
         status = "✓" if self.is_correct else "✗"
         return f"{status} {self.session_key[:8]} - Задача {self.problem.ege_number}"
 
-
-class ProblemStatistics(models.Model):
-    """Общая статистика по задаче"""
-    problem = models.OneToOneField(
-        Problem,
-        on_delete=models.CASCADE,
-        related_name='problem_stats',
-        verbose_name="Задача"
-    )
-
-    # Общая статистика
-    total_attempts = models.IntegerField(
-        default=0,
-        verbose_name="Всего попыток"
-    )
-    correct_attempts = models.IntegerField(
-        default=0,
-        verbose_name="Правильных решений"
-    )
-    total_score = models.IntegerField(
-        default=0,
-        verbose_name="Всего баллов"
-    )
-
-    # Дополнительные метрики
-    first_solved_at = models.DateTimeField(
-        null=True,
-        blank=True,
-        verbose_name="Первый раз решена"
-    )
-    last_solved_at = models.DateTimeField(
-        null=True,
-        blank=True,
-        verbose_name="Последний раз решена"
-    )
-
-    class Meta:
-        verbose_name = "Статистика задачи"
-        verbose_name_plural = "Статистика задач"
-
-    def __str__(self):
-        return f"Статистика задачи #{self.problem.id}"
-
-    @property
-    def accuracy(self):
-        """Процент правильных решений"""
-        if self.total_attempts == 0:
-            return 0
-        return round((self.correct_attempts / self.total_attempts) * 100, 1)
-
-    @property
-    def average_score(self):
-        """Средний балл"""
-        if self.total_attempts == 0:
-            return 0
-        return round(self.total_score / self.total_attempts, 2)
-
-    def update_statistics(self, is_correct, score=1):
-        """Обновить статистику задачи"""
-        self.total_attempts += 1
-        if is_correct:
-            self.correct_attempts += 1
-            self.total_score += score
-
-            now = timezone.now()
-            if not self.first_solved_at:
-                self.first_solved_at = now
-            self.last_solved_at = now
-
-        self.save()
-
-
-class GlobalStatistics(models.Model):
-    """Глобальная статистика по всем пользователям"""
-    total_users = models.IntegerField(
-        default=0,
-        verbose_name="Всего уникальных пользователей"
-    )
-    total_attempts = models.IntegerField(
-        default=0,
-        verbose_name="Всего попыток"
-    )
-    total_correct_attempts = models.IntegerField(
-        default=0,
-        verbose_name="Всего правильных решений"
-    )
-    total_score = models.IntegerField(
-        default=0,
-        verbose_name="Общая сумма баллов"
-    )
-
-    # Статистика по типам задач
-    problems_by_type = models.JSONField(
-        default=dict,
-        verbose_name="Статистика по типам задач",
-        help_text="Формат: {'1': {'total': 100, 'correct': 85}, ...}"
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True,
-        verbose_name="Последнее обновление"
-    )
-
-    class Meta:
-        verbose_name = "Глобальная статистика"
-        verbose_name_plural = "Глобальная статистика"
-
-    def __str__(self):
-        return f"Глобальная статистика ({self.updated_at.date()})"
-
-    @classmethod
-    def get_instance(cls):
-        """Получить единственный экземпляр глобальной статистики"""
-        instance, created = cls.objects.get_or_create(pk=1)
-        return instance
-
-    @property
-    def overall_accuracy(self):
-        """Общий процент правильных решений"""
-        if self.total_attempts == 0:
-            return 0
-        return round((self.total_correct_attempts / self.total_attempts) * 100, 1)
-
-    @property
-    def average_score_per_attempt(self):
-        """Средний балл за попытку"""
-        if self.total_attempts == 0:
-            return 0
-        return round(self.total_score / self.total_attempts, 2)
-
-    @property
-    def average_score_per_user(self):
-        """Средний балл на пользователя"""
-        if self.total_users == 0:
-            return 0
-        return round(self.total_score / self.total_users, 1)
-
-    def update_statistics(self, problem_type, is_correct, score=1):
-        """Обновить глобальную статистику"""
-        self.total_attempts += 1
-        if is_correct:
-            self.total_correct_attempts += 1
-            self.total_score += score
-
-        # Обновляем статистику по типу задачи
-        if str(problem_type) not in self.problems_by_type:
-            self.problems_by_type[str(problem_type)] = {
-                'total': 0,
-                'correct': 0,
-                'score': 0
-            }
-
-        self.problems_by_type[str(problem_type)]['total'] += 1
-        if is_correct:
-            self.problems_by_type[str(problem_type)]['correct'] += 1
-            self.problems_by_type[str(problem_type)]['score'] += score
-
-        # Обновляем количество уникальных пользователей
-        self.total_users = UserStatistics.objects.count()
-
-        self.save()
-
-    def get_type_statistics(self, ege_number):
-        """Получить статистику по конкретному типу задач"""
-        stats = self.problems_by_type.get(str(ege_number), {
-            'total': 0,
-            'correct': 0,
-            'score': 0
-        })
-
-        accuracy = 0
-        if stats['total'] > 0:
-            accuracy = round((stats['correct'] / stats['total']) * 100, 1)
-
-        average_score = 0
-        if stats['total'] > 0:
-            average_score = round(stats['score'] / stats['total'], 2)
-
-        return {
-            'total': stats['total'],
-            'correct': stats['correct'],
-            'score': stats['score'],
-            'accuracy': accuracy,
-            'average_score': average_score
-        }
+# Удаленные модели:
+# 1. ProblemStatistics - заменена на свойство stats в Problem
+# 2. GlobalStatistics - заменена на функции для агрегации данных
