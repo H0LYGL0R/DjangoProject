@@ -382,3 +382,188 @@ body {
     border-radius: 10px;
     transition: width 0.5s ease;
 }
+
+/* Добавьте в конец существующего style.css */
+
+/* Дополнительные стили для графиков */
+.card-header {
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.card-footer {
+    border-top: 1px solid rgba(0,0,0,.125);
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--light-text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.chart-container {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+.rounded {
+    border-radius: 0.5rem !important;
+}
+
+.shadow {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Для адаптивности */
+@media (max-width: 768px) {
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .card-header h3 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Основные стили для статистики */
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.5rem;
+}
+
+/* Карточки статистики */
+.card {
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Прогресс бары */
+.progress {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    border-radius: 10px;
+}
+
+/* Таблицы */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Бейджи */
+.badge {
+    font-weight: 500;
+    padding: 0.4em 0.8em;
+}
+
+/* Графики */
+.graph-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin: 20px 0;
+}
+
+/* Цветовые индикаторы для точности */
+.accuracy-high {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.accuracy-medium {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.accuracy-low {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .display-5 {
+        font-size: 2rem;
+    }
+
+    .lead {
+        font-size: 1rem;
+    }
+
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Стили для навигации */
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* Стили для футера графика */
+.card-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Улучшенные тени */
+.shadow-sm {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.shadow {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.shadow-lg {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
