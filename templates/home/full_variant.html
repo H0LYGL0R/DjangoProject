@@ -9,33 +9,17 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <!-- Шапка варианта -->
     <div class="number-header">
         <div class="container">
             <h1>Полный вариант ЕГЭ</h1>
-            <p class="lead mb-0">Вариант #{{ variant_id }} • 12 задач • 120 минут</p>
+            <p class="lead mb-0">12 задач </p>
         </div>
     </div>
 
     <div class="container">
-        <!-- Форма для ввода ответов -->
         <form id="variant-form" method="post" action="{% url 'check_variant' %}">
             {% csrf_token %}
             <input type="hidden" name="variant_id" value="{{ variant_id }}">
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="alert alert-info">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-info-circle-fill me-3 fs-4"></i>
-                            <div>
-                                <strong>Инструкция:</strong> Заполните ответы для всех 12 задач.
-                                Используйте точку для десятичных дробей (например: 3.14).
-                                После заполнения нажмите кнопку "Проверить вариант" внизу страницы.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="row">
                 {% for problem in problems %}
                 <div class="col-md-12 mb-4">
@@ -69,39 +53,6 @@
                 {% endfor %}
             </div>
 
-            <!-- Сводная информация -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-md-3 mb-3">
-                            <div class="p-3 bg-light rounded">
-                                <div class="fs-4 fw-bold" id="filled-count">0</div>
-                                <div class="text-muted">Заполнено задач</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="p-3 bg-light rounded">
-                                <div class="fs-4 fw-bold">12</div>
-                                <div class="text-muted">Всего задач</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="p-3 bg-light rounded">
-                                <div class="fs-4 fw-bold">12</div>
-                                <div class="text-muted">Максимум баллов</div>
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <div class="p-3 bg-light rounded">
-                                <div class="fs-4 fw-bold" id="progress">0%</div>
-                                <div class="text-muted">Прогресс</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Кнопки действий -->
             <div class="action-buttons">
                 <div class="container">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
@@ -117,7 +68,6 @@
                 </div>
             </div>
 
-            <!-- Результаты проверки -->
             {% if results %}
             <div class="card results-card border-success mt-4" style="display:block;">
                 <div class="card-header bg-success text-white">
@@ -166,18 +116,6 @@
 
         </form>
 
-        <!-- Информация о варианте -->
-        <div class="card border-0 bg-light mb-5">
-            <div class="card-body text-center">
-                <p class="mb-0">
-                    <small class="text-muted">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Этот вариант создан автоматически на основе реальных задач ЕГЭ по математике.
-                        <span class="d-block mt-1">Все задачи взяты из открытого банка заданий ФИПИ.</span>
-                    </small>
-                </p>
-            </div>
-        </div>
     </div>
 </body>
 </html>
