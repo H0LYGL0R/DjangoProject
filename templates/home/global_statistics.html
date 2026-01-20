@@ -11,7 +11,7 @@
 <body>
     <nav class="navbar navbar-dark bg-success mb-4">
         <div class="container">
-            <a class="navbar-brand" href="/">MathExamPrep</a>
+            <a class="navbar-brand" href="/">ULearnEGE</a>
             <div>
                 <a href="{% url 'choose_mode' %}" class="btn btn-outline-light me-2">
                     <i class="bi bi-arrow-left"></i> Назад
@@ -27,74 +27,151 @@
         <div class="text-center mb-5">
             <h1 class="display-5 fw-bold mb-3">Общая статистика платформы</h1>
             <p class="lead text-muted">Статистика всех пользователей MathExamPrep</p>
-            <div class="text-muted">
-                <i class="bi bi-info-circle"></i> Обновлено: {{ global_stats.updated_at|date:"d.m.Y H:i" }}
-            </div>
         </div>
 
-        <div class="row mb-5">
-            <div class="col-md-3 col-6 mb-3">
-                <div class="card text-center h-100">
-                    <div class="card-body">
-                        <div class="stat-number text-primary">{{ global_stats.total_users }}</div>
-                        <div class="stat-label">Пользователей</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-3">
-                <div class="card text-center h-100">
-                    <div class="card-body">
-                        <div class="stat-number text-success">{{ global_stats.total_attempts }}</div>
-                        <div class="stat-label">Всего попыток</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-3">
-                <div class="card text-center h-100">
-                    <div class="card-body">
-                        <div class="stat-number text-info">{{ global_stats.overall_accuracy }}%</div>
-                        <div class="stat-label">Общая точность</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6 mb-3">
-                <div class="card text-center h-100">
-                    <div class="card-body">
-                        <div class="stat-number text-warning">{{ global_stats.total_score }}</div>
-                        <div class="stat-label">Всего баллов</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="card mb-5">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="bi bi-list-ol me-2"></i>Статистика по типам задач</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    {% for stat in type_stats %}
-                    <div class="col-md-3 col-6 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body text-center">
-                                <h6 class="card-title">Задача {{ stat.number }}</h6>
-                                <div class="progress mb-2" style="height: 10px;">
-                                    <div class="progress-bar bg-success" style="width: {{ stat.stats.accuracy }}%"></div>
-                                </div>
-                                <div class="d-flex justify-content-between small">
-                                    <span class="text-muted">{{ stat.stats.correct }}/{{ stat.stats.total }}</span>
-                                    <span class="text-muted">{{ stat.stats.accuracy }}%</span>
-                                </div>
-                                <small class="text-muted">Средний балл: {{ stat.stats.average_score }}</small>
-                            </div>
+        <div class="d-flex justify-content-center">
+            <div class="row mb-5 w-100 justify-content-center">
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                    <div class="card text-center h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="stat-number text-primary">{{ global_stats.total_users }}</div>
+                            <div class="stat-label">Пользователей</div>
                         </div>
                     </div>
-                    {% endfor %}
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                    <div class="card text-center h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="stat-number text-success">{{ global_stats.total_attempts }}</div>
+                            <div class="stat-label">Всего попыток</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                    <div class="card text-center h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="stat-number text-info">{{ global_stats.overall_accuracy }}%</div>
+                            <div class="stat-label">Общая точность</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-lg mb-5">
+            <div class="card-header bg-white border-0 py-4">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-bar-chart-line me-2"></i>Общая точность по типам задач
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            <img src="data:image/png;base64,{{ graph_image }}"
+                                 alt="График точности по типам задач"
+                                 class="img-fluid rounded"
+                                 style="max-width: 100%; height: auto;">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-8">
+                        <div class="d-flex flex-wrap">
+                            <span class="badge bg-success me-2 mb-1">
+                                <i class="bi bi-check-circle"></i> Высокая точность (≥70%)
+                            </span>
+                            <span class="badge bg-warning me-2 mb-1">
+                                <i class="bi bi-dash-circle"></i> Средняя точность (40-69%)
+                            </span>
+                            <span class="badge bg-danger mb-1">
+                                <i class="bi bi-exclamation-circle"></i> Низкая точность (<40%)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <small class="text-muted">
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+                            Обновлено: {{ data_source.updated_at }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-light">
+                <div class="row">
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            <i class="bi bi-database me-1"></i>
+                            Всего попыток: {{ data_source.total_attempts }}
+                        </small>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <small class="text-muted">
+                            <i class="bi bi-people me-1"></i>
+                            Пользователей: {{ global_stats.total_users }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-lg mb-5">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-person-badge me-2"></i>Ваши результаты vs общая статистика
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            <img src="data:image/png;base64,{{ user_vs_global_image }}"
+                                 alt="Сравнение ваших результатов с общей статистикой"
+                                 class="img-fluid rounded"
+                                 style="max-width: 100%; height: auto;">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-8">
+                        <div class="d-flex flex-wrap">
+                            <span class="badge bg-success me-2 mb-1">
+                                <i class="bi bi-person-fill"></i> Ваша точность
+                            </span>
+                            <span class="badge bg-primary me-2 mb-1">
+                                <i class="bi bi-people-fill"></i> Общая точность
+                            </span>
+                            <span class="badge bg-success me-2 mb-1">
+                                <i class="bi bi-arrow-up"></i> Вы лучше
+                            </span>
+                            <span class="badge bg-danger mb-1">
+                                <i class="bi bi-arrow-down"></i> Вы хуже
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <small class="text-muted">
+                            <i class="bi bi-person-circle me-1"></i>
+                            Ваши данные
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
 
 
+        <div class="text-center mt-5 mb-5">
+            <a href="{% url 'choose_mode' %}" class="btn btn-success btn-lg me-2">
+                <i class="bi bi-play-fill"></i> Решать задачи
+            </a>
+            <a href="{% url 'user_statistics' %}" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-person"></i> Моя статистика
+            </a>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
