@@ -10,7 +10,6 @@ import matplotlib
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import pandas as pd
 import io
 import base64
 import numpy as np
