@@ -1,6 +1,3 @@
-/* style.css - Основные стили MathExamPrep */
-
-/* Переменные цветов */
 :root {
     --primary-color: #667eea;
     --primary-dark: #5a67d8;
@@ -16,433 +13,18 @@
     --transition: all 0.3s ease;
 }
 
-/* Базовые стили */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--dark-text);
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
-/* ========== ГЕРОЙ-СЕКЦИЯ - ИСПРАВЛЕНО ========== */
-.hero-section {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    color: white;
-    padding: 100px 0;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
-    background-size: cover;
-    /* ВАЖНО: предотвращаем блокировку кликов */
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Обертка для контента героя - помещаем над псевдоэлементом */
-.hero-section .container {
-    position: relative;
-    z-index: 2; /* Контент выше псевдоэлемента */
-}
-
-.hero-section h1 {
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.hero-section .lead {
-    font-size: 1.25rem;
-    opacity: 0.9;
-}
-
-/* ========== КНОПКА - ИСПРАВЛЕНО ========== */
-/* Более специфичные селекторы, чтобы перебить Bootstrap */
-.btn-primary,
-.hero-section .btn-primary,
-.hero-section a.btn-primary {
-    background-color: var(--primary-color) !important;
-    border-color: var(--primary-color) !important;
-    padding: 0.75rem 2rem !important;
-    font-weight: 600 !important;
-    border-radius: var(--border-radius) !important;
-    transition: var(--transition) !important;
-    cursor: pointer !important; /* Явно указываем курсор */
-    position: relative !important; /* Для корректного z-index */
-    z-index: 10 !important; /* Кнопка выше других элементов */
-}
-
-.btn-primary:hover,
-.hero-section .btn-primary:hover,
-.hero-section a.btn-primary:hover {
-    background-color: var(--primary-dark) !important;
-    border-color: var(--primary-dark) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
-}
-
-/* Убираем стандартное подчеркивание у ссылок в кнопках */
-.hero-section a.btn-primary {
-    text-decoration: none !important;
-}
-
-/* Специфичный стиль для кнопки в герое с иконкой */
-.hero-section .btn-lg {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0.75rem 3rem !important;
-    font-size: 1.25rem !important;
-}
-
-/* ========== Адаптивность ========== */
-@media (max-width: 768px) {
-    .hero-section {
-        padding: 60px 0;
-        text-align: center;
-    }
-
-    .hero-section h1 {
-        font-size: 2rem;
-    }
-
-    .hero-section .btn-lg {
-        padding: 0.65rem 2rem !important;
-        font-size: 1.1rem !important;
-    }
-}
-
-@media (max-width: 576px) {
-    .hero-section h1 {
-        font-size: 1.75rem;
-    }
-
-    .hero-section .btn-lg {
-        padding: 0.5rem 1.5rem !important;
-        font-size: 1rem !important;
-        width: 100%;
-        max-width: 280px;
-        margin: 0 auto;
-    }
-}
-
-/* ========== Отладка ========== */
-/* Раскомментируйте для визуальной отладки слоев */
-/*
-.hero-section::before {
-    background: rgba(255, 0, 0, 0.1) !important; /* Красная полупрозрачная заливка для отладки */
-/* }
-*/
-
-/* ========== Остальные стили (оставлены без изменений) ========== */
-
-/* Навигация */
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: var(--primary-color) !important;
-}
-
-.navbar {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.nav-link {
-    font-weight: 500;
-    padding: 0.5rem 1rem !important;
-    transition: var(--transition);
-}
-
-.nav-link:hover {
-    color: var(--primary-color) !important;
-}
-
-.nav-link.active {
-    color: var(--primary-color) !important;
-    border-bottom: 3px solid var(--primary-color);
-}
-
-/* Карточки преимуществ */
-.feature-card {
-    transition: var(--transition);
-    border: none;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    height: 100%;
-    border-top: 4px solid transparent;
-}
-
-.feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    border-top-color: var(--primary-color);
-}
-
-.feature-icon {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    font-size: 2rem;
-}
-
-/* Карточки тем */
-.topic-card {
-    border: none;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    transition: var(--transition);
-    border-left: 4px solid var(--primary-color);
-    height: 100%;
-}
-
-.topic-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.topic-badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-}
-
-/* Статистика */
-.stat-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    line-height: 1;
-}
-
-.stat-label {
-    font-size: 0.875rem;
-    color: var(--light-text);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* График */
-.chart-container {
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    padding: 1.5rem;
-}
-
-.chart-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--dark-text);
-}
-
-/* Призыв к действию */
-.cta-section {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    color: white;
-    padding: 80px 0;
-    position: relative;
-}
-
-.cta-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,100 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
-    background-size: cover;
-}
-
-/* Футер */
-.footer {
-    background: #f8f9fa;
-    border-top: 1px solid #e9ecef;
-}
-
-.footer-title {
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--dark-text);
-}
-
-.footer-links {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-links li {
-    margin-bottom: 0.5rem;
-}
-
-.footer-links a {
-    color: var(--light-text);
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-.footer-links a:hover {
-    color: var(--primary-color);
-    padding-left: 5px;
-}
-
-.social-icons a {
-    display: inline-block;
-    width: 36px;
-    height: 36px;
-    background: var(--primary-color);
-    color: white;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 36px;
-    margin-right: 10px;
-    transition: var(--transition);
-}
-
-.social-icons a:hover {
-    background: var(--primary-dark);
-    transform: translateY(-3px);
-}
-
-/* Утилиты */
-.section-title {
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: var(--dark-text);
-}
-
-.section-subtitle {
-    color: var(--light-text);
-    margin-bottom: 3rem;
-}
-
-.divider {
-    height: 3px;
-    width: 60px;
-    background: var(--primary-color);
-    margin: 1rem auto;
-}
-
-/* Анимации */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-/* Кнопки */
-.btn-outline-primary {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-    padding: 0.75rem 2rem;
-    font-weight: 600;
-    border-radius: var(--border-radius);
-    transition: var(--transition);
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    transform: translateY(-2px);
-}
-
-/* Прогресс-бар */
-.progress-container {
-    background: #e2e8f0;
-    border-radius: 10px;
-    overflow: hidden;
-    height: 10px;
-    margin: 1rem 0;
-}
-
-.progress-bar {
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    height: 100%;
-    border-radius: 10px;
-    transition: width 0.5s ease;
-}
-
-/* Добавьте в конец существующего style.css */
-
-/* Дополнительные стили для графиков */
-.card-header {
-    border-bottom: 1px solid rgba(0,0,0,.125);
-}
-
-.card-footer {
-    border-top: 1px solid rgba(0,0,0,.125);
-}
-
-.shadow-lg {
-    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
-}
-
-.stat-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1;
-}
-
-.stat-label {
-    font-size: 0.875rem;
-    color: var(--light-text);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.chart-container {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.img-fluid {
+.container {
     max-width: 100%;
-    height: auto;
+    padding: 0 15px;
 }
 
-.rounded {
-    border-radius: 0.5rem !important;
-}
-
-.shadow {
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-}
-
-/* Для адаптивности */
-@media (max-width: 768px) {
-    .stat-number {
-        font-size: 2rem;
-    }
-
-    .card-header h3 {
-        font-size: 1.25rem;
-    }
-}
-
-/* Основные стили для статистики */
 .stat-number {
     font-size: 2.5rem;
     font-weight: 700;
@@ -457,7 +39,6 @@ body {
     margin-top: 0.5rem;
 }
 
-/* Карточки статистики */
 .card {
     border: none;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -468,52 +49,32 @@ body {
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-/* Прогресс бары */
-.progress {
-    border-radius: 10px;
-    overflow: hidden;
+.img-fluid {
+    max-width: 100%;
+    height: auto;
 }
 
-.progress-bar {
-    border-radius: 10px;
+.rounded {
+    border-radius: 0.5rem !important;
 }
 
-/* Таблицы */
-.table-hover tbody tr:hover {
-    background-color: rgba(0, 123, 255, 0.05);
+.shadow-sm {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
 }
 
-/* Бейджи */
+.shadow {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1) !important;
+}
+
 .badge {
     font-weight: 500;
     padding: 0.4em 0.8em;
 }
 
-/* Графики */
-.graph-container {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    margin: 20px 0;
-}
-
-/* Цветовые индикаторы для точности */
-.accuracy-high {
-    color: #28a745;
-    font-weight: bold;
-}
-
-.accuracy-medium {
-    color: #ffc107;
-    font-weight: bold;
-}
-
-.accuracy-low {
-    color: #dc3545;
-    font-weight: bold;
-}
-
-/* Адаптивность */
 @media (max-width: 768px) {
     .stat-number {
         font-size: 2rem;
@@ -531,39 +92,13 @@ body {
         padding: 0.5rem 1rem;
         font-size: 1rem;
     }
-}
 
-/* Анимации */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    .d-flex.flex-wrap {
+        justify-content: center !important;
+    }
 
-.fade-in {
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* Стили для навигации */
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
-}
-
-/* Стили для футера графика */
-.card-footer {
-    background-color: #f8f9fa;
-    border-top: 1px solid #e9ecef;
-}
-
-/* Улучшенные тени */
-.shadow-sm {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.shadow {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.shadow-lg {
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    .text-end {
+        text-align: center !important;
+        margin-top: 1rem;
+    }
 }
